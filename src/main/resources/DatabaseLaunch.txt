@@ -1,0 +1,52 @@
+create type units_enum as enum('bar', 'voltage', 'degree', 'percent');
+create type types_enum as enum('pressure', 'voltage', 'temperature', 'humidity');
+
+create table roles (
+    Id serial primary key,
+    Name character varying(45)
+);
+
+create table users (
+    Id serial primary key,
+    Login character varying(255),
+    Password character varying(255)
+);
+
+create table users_roles (
+    User_id integer,
+    Role_id integer,
+    foreign key (User_id) references users (Id),
+    foreign key (Role_id) references roles (Id)
+);
+
+create table ranges (
+    Id serial primary key,
+    Range_from integer not null,
+    Range_to integer not null
+);
+
+create table sensors (
+    Id serial primary key,
+    Name character varying(30) not null,
+    Model character varying(15) not null,
+    Range_Id integer not null,
+    Type types_enum not null,
+    Unit units_enum,
+    Location character varying(40),
+    Description character varying(200),
+    foreign key (Range_Id) references ranges (Id)
+);
+
+insert into roles values (1, 'Administrator');
+insert into roles values (2, 'Viewer');
+
+insert into users values(1, 'admin', '$2a$12$ort46odg7qZ9gI.GI8Ffr.yU8y6UsjlzB9e0/qWaX8qUx4djx6b8S');
+insert into users values(2, 'user', '$2a$12$TZ8DAhc7DTgTKm2yLzJ0seGoOiTFiauKsqxzdUCvfBPhRpLC0MAoO');
+
+insert into users_roles values (1, 1);
+insert into users_roles values (2, 2);
+
+insert into ranges values(1, 0, 100);
+insert into sensors values(1, 'thermometer', 'c-25', 1, 'temperature', 'degree', 'outside', 'usual thermometer');
+insert into ranges values(2, 0, 10);
+insert into sensors values(2, 'barometer', 'sw-14', 2, 'temperature', 'bar', 'inside', 'usual barometer');
