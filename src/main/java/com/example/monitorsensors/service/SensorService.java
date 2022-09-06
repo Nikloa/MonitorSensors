@@ -3,6 +3,7 @@ package com.example.monitorsensors.service;
 import com.example.monitorsensors.model.SensorEntity;
 import com.example.monitorsensors.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
@@ -58,9 +59,15 @@ public class SensorService {
         List<SensorEntity> list = new ArrayList<>();
 
         for (String word : search.split(" ")) {
-            list.addAll(sensorRepository.findAllByNameContainingIgnoreCaseOrModelContainingIgnoreCaseOrLocationContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-                    word, word, word, word
-            ));
+
+            SensorEntity sensorEntity = SensorEntity.builder()
+                    .name(word)
+                    .model(word)
+                    .location(word)
+                    .description(word)
+                    .build();
+
+            list.addAll(sensorRepository.findAll(Example.of(sensorEntity, SEARCH_CONDITIONS_MATCH_ANY)));
         }
 
         return list.stream().distinct().collect(Collectors.toList());

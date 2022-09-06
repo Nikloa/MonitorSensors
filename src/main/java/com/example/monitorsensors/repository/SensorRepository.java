@@ -10,6 +10,4 @@ import java.util.List;
 public interface SensorRepository extends JpaRepository<SensorEntity, Long> {
 
     SensorEntity findSensorEntityById(long id);
-    List<SensorEntity> findAllByNameContainingIgnoreCaseOrModelContainingIgnoreCaseOrLocationContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String model, String location, String description);
-
 }
